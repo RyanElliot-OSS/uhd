@@ -95,7 +95,7 @@ namespace soft_reg_field {
     }
 
     template<typename data_t>
-    inline size_t mask(const soft_reg_field_t field) {
+    inline data_t mask(const soft_reg_field_t field) {
         static const data_t ONE = static_cast<data_t>(1);
         //Behavior for the left shift operation is undefined in C++
         //if the shift amount is >= bitwidth of the datatype
