@@ -40,6 +40,7 @@ SET(test_sources
     property_test.cpp
     ranges_test.cpp
     sid_t_test.cpp
+    soft_reg_test.cpp
     sph_recv_test.cpp
     sph_send_test.cpp
     subdev_spec_test.cpp
