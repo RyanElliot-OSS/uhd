@@ -174,6 +174,11 @@ namespace uhd {
         void reverse();
 
         // Overloaded operators
+	
+	//! Copy a sid
+	sid_t(const sid_t& sid) {
+	    set_sid(sid.get_sid());
+	}
 
         sid_t operator = (boost::uint32_t new_sid) {
             set_sid(new_sid);
