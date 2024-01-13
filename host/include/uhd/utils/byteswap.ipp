@@ -18,6 +18,8 @@
 #ifndef INCLUDED_UHD_UTILS_BYTESWAP_IPP
 #define INCLUDED_UHD_UTILS_BYTESWAP_IPP
 
+#include <boost/version.hpp>
+
 /***********************************************************************
  * Platform-specific implementation details for byteswap below:
  **********************************************************************/
@@ -99,12 +101,16 @@
 /***********************************************************************
  * Define the templated network to/from host conversions
  **********************************************************************/
+#if BOOST_VERSION < 106900
 #include <boost/detail/endian.hpp>
+#else
+#include <boost/predef/other/endian.h>
+#endif
 
 namespace uhd {
 
 template<typename T> UHD_INLINE T ntohx(T num){
-    #ifdef BOOST_BIG_ENDIAN
+    #if defined BOOST_BIG_ENDIAN || defined BOOST_ENDIAN_BIG_BYTE
         return num;
     #else
         return uhd::byteswap(num);
@@ -112,7 +118,7 @@ template<typename T> UHD_INLINE T ntohx(T num){
 }
 
 template<typename T> UHD_INLINE T htonx(T num){
-    #ifdef BOOST_BIG_ENDIAN
+    #if defined BOOST_BIG_ENDIAN || defined BOOST_ENDIAN_BIG_BYTE
         return num;
     #else
         return uhd::byteswap(num);
@@ -120,7 +126,7 @@ template<typename T> UHD_INLINE T htonx(T num){
 }
 
 template<typename T> UHD_INLINE T wtohx(T num){
-    #ifdef BOOST_BIG_ENDIAN
+    #if defined BOOST_BIG_ENDIAN || defined BOOST_ENDIAN_BIG_BYTE
         return uhd::byteswap(num);
     #else
         return num;
@@ -128,7 +134,7 @@ template<typename T> UHD_INLINE T wtohx(T num){
 }
 
 template<typename T> UHD_INLINE T htowx(T num){
-    #ifdef BOOST_BIG_ENDIAN
+    #if defined BOOST_BIG_ENDIAN || defined BOOST_ENDIAN_BIG_BYTE
         return uhd::byteswap(num);
     #else
         return num;
