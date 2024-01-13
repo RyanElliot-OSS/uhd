@@ -87,12 +87,12 @@ struct clock_settings_type{
 
 //! gives the greatest divisor of num between 1 and max inclusive
 template<typename T> static inline T greatest_divisor(T num, T max){
-    for (T i = max; i > 1; i--) if (num%i == 0) return i; return 1;
+    for (T i = max; i > 1; i--){ if (num%i == 0){ return i; } }; return 1;
 }
 
 //! gives the least divisor of num between min and num exclusive
 template<typename T> static inline T least_divisor(T num, T min){
-    for (T i = min; i < num; i++) if (num%i == 0) return i; return 1;
+    for (T i = min; i < num; i++){ if (num%i == 0){ return i; } }; return 1;
 }
 
 static clock_settings_type get_clock_settings(double rate){

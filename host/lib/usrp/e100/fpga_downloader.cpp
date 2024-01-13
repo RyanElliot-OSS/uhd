@@ -191,16 +191,15 @@ static void prepare_fpga_for_configuration(gpio &prog, gpio &)//init)
 
 spidev::spidev(std::string fname)
 {
-	int ret;
 	int mode = 0;
 	int speed = 12000000;
 	int bits = 8;
 
 	fd = open(fname.c_str(), O_RDWR);
 
-	ret = ioctl(fd, SPI_IOC_WR_MODE, &mode);
-	ret = ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed);
-	ret = ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &bits);
+	if ( -1 == ioctl(fd, SPI_IOC_WR_MODE, &mode)) throw uhd::runtime_error("Could not set spidev mode");
+	if ( -1 == ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed)) throw uhd::runtime_error("Could not set spidev max speed");
+	if ( -1 == ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &bits)) throw uhd::runtime_error("Could not set spidev bits per word");
 }
 	
 
@@ -211,8 +210,6 @@ spidev::~spidev()
 
 void spidev::send(char *buf, char *rbuf, unsigned int nbytes)
 {
-	int ret;
-
 	struct spi_ioc_transfer tr;
 	tr.tx_buf = (unsigned long) buf;
 	tr.rx_buf = (unsigned long) rbuf;
@@ -221,8 +218,7 @@ void spidev::send(char *buf, char *rbuf, unsigned int nbytes)
 	tr.speed_hz = 48000000;
 	tr.bits_per_word = 8;
 
-	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);	
-
+	if ( ioctl(fd, SPI_IOC_MESSAGE(1), &tr) < 1) throw uhd::runtime_error("Could not send spidev message");
 }
 
 static void send_file_to_fpga(const std::string &file_name, gpio &error, gpio &done)
