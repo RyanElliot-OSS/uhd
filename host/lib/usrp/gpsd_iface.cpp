@@ -127,8 +127,18 @@ private: // member functions
                 _timeout_cnt = 0;
                 _detected = true;
 
-                if (gps_read(&_gps_data) < 0)
-                    throw std::runtime_error("error while reading");
+		// From: https://github.com/OLSR/olsrd/commit/35f4205052c80bc93e72d1826d393d489339f46d
+		#if ((GPSD_API_MAJOR_VERSION >= 7) && (GPSD_API_MINOR_VERSION >= 0))
+		    char msg[] = '\0';
+		    int msg_len = 1;
+		    if (gps_read(&_gps_data, msg, msg_len) < 0)
+			    throw std::runtime_error("error while reading");
+		#else
+		    gpsReadCode = gps_read(gpsdata);
+		    if (gps_read(&_gps_data) < 0)
+			    throw std::runtime_error("error while reading");
+		#endif
+
             }
         }
     }
@@ -212,7 +222,7 @@ private: // member functions
             tm.tm_mon++;
             tm.tm_year %= 100;
         }
-        std::string string = str(boost::format(
+        std::string string = boost::str(boost::format(
            "$GPRMC,%02d%02d%02d,%c,%09.4f,%c,%010.4f,%c,%.4f,%.3f,%02d%02d%02d,,")
         % tm.tm_hour
         % tm.tm_min
@@ -245,7 +255,7 @@ private: // member functions
         intfixtime = (time_t) _gps_data.fix.time;
         (void) gmtime_r(&intfixtime, &tm);
 
-        std::string string = str(boost::format(
+        std::string string = boost::str(boost::format(
             "$GPGGA,%02d%02d%02d,%09.4f,%c,%010.4f,%c,%d,%02d,")
             % tm.tm_hour
             % tm.tm_min
@@ -273,7 +283,7 @@ private: // member functions
             string.append(",");
         else
             string.append(
-                str(boost::format("%.3f,M,") % _gps_data.separation));
+                boost::str(boost::format("%.3f,M,") % _gps_data.separation));
 
         if (boost::math::isnan(mag_var))
             string.append(",");
