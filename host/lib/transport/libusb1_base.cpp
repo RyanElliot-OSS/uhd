@@ -43,7 +43,7 @@ class libusb_session_impl : public libusb::session{
 public:
     libusb_session_impl(void){
         UHD_ASSERT_THROW(libusb_init(&_context) == 0);
-        libusb_set_debug(_context, debug_level);
+        libusb_set_option(_context, LIBUSB_OPTION_LOG_LEVEL, debug_level);
         task_handler = task::make(boost::bind(&libusb_session_impl::libusb_event_handler_task, this, _context));
     }
 
@@ -101,7 +101,7 @@ libusb::session::sptr libusb::session::get_global_session(void){
     if (level_string != NULL)
     {
         const int level = int(level_string[0] - '0'); //easy conversion to integer
-        if (level >= 0 and level <= 3) libusb_set_debug(new_global_session->get_context(), level);
+        if (level >= 0 and level <= 3) libusb_set_option(new_global_session->get_context(), LIBUSB_OPTION_LOG_LEVEL, level);
     }
 
     return new_global_session;

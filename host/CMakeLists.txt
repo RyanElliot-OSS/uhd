@@ -23,8 +23,10 @@
 ########################################################################
 # Project setup
 ########################################################################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+#CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.20) # Required to set CXX_STANDARD to 23
 PROJECT(UHD CXX C)
+set (CMAKE_CXX_STANDARD 11)
 ENABLE_TESTING()
 
 #make sure our local CMake Modules path comes first
@@ -33,8 +35,8 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 ########################################################################
 # Check Compiler Version
 ########################################################################
-SET(GCC_MIN_VERSION "4.4.0")
-SET(CLANG_MIN_VERSION "3.1.0")
+SET(GCC_MIN_VERSION "13.0.0")
+SET(CLANG_MIN_VERSION "16.0.0")
 SET(APPLECLANG_MIN_VERSION "500")
 
 IF(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
