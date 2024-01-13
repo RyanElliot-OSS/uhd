@@ -26,9 +26,17 @@
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/thread/thread.hpp>
-#include <boost/math/common_factor_rt.hpp> //gcd
+#include <boost/version.hpp>
 #include <algorithm>
 #include <utility>
+
+#if BOOST_VERSION < 106700
+#include <boost/math/common_factor_rt.hpp> //gcd
+#define BOOST_GCD(a,b) boost::math::gcd(a,b)
+#else
+#include <boost/integer/common_factor_rt.hpp>
+#define BOOST_GCD(a,b) boost::integer::gcd(a,b)
+#endif
 
 using namespace uhd;
 
@@ -109,7 +117,7 @@ static clock_settings_type get_clock_settings(double rate){
 
     const boost::uint64_t out_rate = boost::uint64_t(rate);
     const boost::uint64_t ref_rate = boost::uint64_t(cs.get_ref_rate());
-    const size_t gcd = size_t(boost::math::gcd(ref_rate, out_rate));
+    const size_t gcd = size_t(BOOST_GCD(ref_rate, out_rate));
 
     for (size_t i = 1; i <= 100; i++){
         const size_t X = i*ref_rate/gcd;
@@ -272,7 +280,7 @@ public:
         const double ref_rate = REFERENCE_INPUT_RATE*2;
 
         //bypass prescaler such that N = B
-        long gcd = boost::math::gcd(long(ref_rate), long(rate));
+        long gcd = BOOST_GCD(long(ref_rate), long(rate));
         _ad9522_regs.set_r_counter(int(ref_rate/gcd));
         _ad9522_regs.a_counter = 0;
         _ad9522_regs.set_b_counter(int(rate/gcd));

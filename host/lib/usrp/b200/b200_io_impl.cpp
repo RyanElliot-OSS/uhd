@@ -24,8 +24,15 @@
 #include <uhd/utils/math.hpp>
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
-#include <boost/math/common_factor.hpp>
 #include <set>
+
+#if BOOST_VERSION < 106700
+#include <boost/math/common_factor.hpp>
+#define BOOST_LCM boost::math::lcm
+#else
+#include <boost/integer/common_factor_rt.hpp>
+#define BOOST_LCM boost::integer::lcm
+#endif
 
 using namespace uhd;
 using namespace uhd::usrp;
@@ -115,7 +122,7 @@ void b200_impl::set_auto_tick_rate(
             }
             // Clean up floating point rounding errors if they crept in
             this_dsp_rate = std::min(max_tick_rate, this_dsp_rate);
-            lcm_rate = boost::math::lcm<boost::uint32_t>(
+            lcm_rate = BOOST_LCM<boost::uint32_t>(
                     lcm_rate,
                     static_cast<boost::uint32_t>(floor(this_dsp_rate + 0.5))
             );
