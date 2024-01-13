@@ -30,7 +30,7 @@ namespace uhd{ namespace /*anon*/{
 template <typename T> class property_impl : public property<T>{
 public:
 
-    ~property_impl<T>(void){
+    ~property_impl(void){
         /* NOP */
     }
 
