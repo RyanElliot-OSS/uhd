@@ -28,6 +28,10 @@
 #include <uhd/usrp/dboard_manager.hpp>
 #include <boost/assign/list_of.hpp>
 
+#if 107300 < BOOST_VERSION
+using namespace boost::placeholders;
+#endif
+
 using namespace uhd;
 using namespace uhd::usrp;
 using namespace boost::assign;

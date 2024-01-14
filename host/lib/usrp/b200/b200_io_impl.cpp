@@ -22,9 +22,14 @@
 #include "../../transport/super_send_packet_handler.hpp"
 #include "async_packet_handler.hpp"
 #include <uhd/utils/math.hpp>
-#include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 #include <set>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
+#include <boost/bind.hpp>
+#endif
 
 #if BOOST_VERSION < 106700
 #include <boost/math/common_factor.hpp>

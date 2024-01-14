@@ -18,7 +18,12 @@
 #ifndef INCLUDED_IHEX_READER_HPP
 #define INCLUDED_IHEX_READER_HPP
 
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
 #include <boost/bind.hpp>
+#endif
+
 #include <boost/function.hpp>
 #include <boost/cstdint.hpp>
 #include <string>

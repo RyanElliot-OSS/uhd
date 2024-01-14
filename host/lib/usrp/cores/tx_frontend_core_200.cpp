@@ -20,7 +20,13 @@
 #include <uhd/exception.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/math/special_functions/round.hpp>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+#else
 #include <boost/bind.hpp>
+#endif
 
 using namespace uhd;
 

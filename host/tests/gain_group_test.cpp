@@ -17,9 +17,15 @@
 
 #include <boost/test/unit_test.hpp>
 #include <uhd/utils/gain_group.hpp>
-#include <boost/bind.hpp>
 #include <boost/math/special_functions/round.hpp>
 #include <iostream>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+#else
+#include <boost/bind.hpp>
+#endif
 
 #define rint(x) boost::math::iround(x)
 

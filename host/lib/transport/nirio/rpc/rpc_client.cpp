@@ -16,10 +16,15 @@
 //
 
 #include <uhd/transport/nirio/rpc/rpc_client.hpp>
-#include <boost/bind.hpp>
 #include <boost/version.hpp>
 #include <boost/format.hpp>
 #include <boost/asio/error.hpp>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
+#include <boost/bind.hpp>
+#endif
 
 #define CHAIN_BLOCKING_XFER(func, exp, status) \
     if (status) { \

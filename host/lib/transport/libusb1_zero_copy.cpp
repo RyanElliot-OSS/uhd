@@ -24,12 +24,18 @@
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/function.hpp>
-#include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/circular_buffer.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
 #include <list>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+#else
+#include <boost/bind.hpp>
+#endif
 
 #ifdef UHD_TXRX_DEBUG_PRINTS
 #include <vector>

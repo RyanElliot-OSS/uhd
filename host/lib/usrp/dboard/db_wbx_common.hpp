@@ -65,7 +65,12 @@
 #include <boost/format.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/math/special_functions/round.hpp>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
 #include <boost/bind.hpp>
+#endif
 
 namespace uhd{ namespace usrp{
 

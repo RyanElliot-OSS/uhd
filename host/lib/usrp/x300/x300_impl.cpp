@@ -28,7 +28,6 @@
 #include <uhd/usrp/subdev_spec.hpp>
 #include <uhd/transport/if_addrs.hpp>
 #include <boost/foreach.hpp>
-#include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/assign/list_of.hpp>
@@ -38,6 +37,13 @@
 #include <uhd/transport/nirio_zero_copy.hpp>
 #include <uhd/transport/nirio/niusrprio_session.h>
 #include <uhd/utils/platform.hpp>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+#else
+#include <boost/bind.hpp>
+#endif
 
 #define NIUSRPRIO_DEFAULT_RPC_PORT "5444"
 

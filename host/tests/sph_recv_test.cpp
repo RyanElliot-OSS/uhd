@@ -18,10 +18,16 @@
 #include <boost/test/unit_test.hpp>
 #include "../lib/transport/super_recv_packet_handler.hpp"
 #include <boost/shared_array.hpp>
-#include <boost/bind.hpp>
 #include <complex>
 #include <vector>
 #include <list>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+#else
+#include <boost/bind.hpp>
+#endif
 
 #define BOOST_CHECK_TS_CLOSE(a, b) \
     BOOST_CHECK_CLOSE((a).get_real_secs(), (b).get_real_secs(), 0.001)

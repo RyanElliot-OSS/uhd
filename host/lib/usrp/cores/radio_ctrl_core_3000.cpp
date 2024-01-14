@@ -26,8 +26,13 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/format.hpp>
-#include <boost/bind.hpp>
 #include <queue>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
+#include <boost/bind.hpp>
+#endif
 
 using namespace uhd;
 using namespace uhd::usrp;

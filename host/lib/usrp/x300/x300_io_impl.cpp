@@ -24,11 +24,17 @@
 #include "async_packet_handler.hpp"
 #include <uhd/transport/bounded_buffer.hpp>
 #include <uhd/transport/chdr.hpp>
-#include <boost/bind.hpp>
 #include <uhd/utils/tasks.hpp>
 #include <uhd/utils/log.hpp>
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+#else
+#include <boost/bind.hpp>
+#endif
 
 using namespace uhd;
 using namespace uhd::usrp;

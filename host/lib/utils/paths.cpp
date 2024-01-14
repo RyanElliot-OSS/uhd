@@ -21,12 +21,17 @@
 #include <uhd/utils/paths.hpp>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/regex.hpp>
 #include <boost/tokenizer.hpp>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
+#include <boost/bind.hpp>
+#endif
 
 #include <cstdio>
 #include <cstdlib>

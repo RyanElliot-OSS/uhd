@@ -19,8 +19,13 @@
 
 #include <gps.h>
 
-#include <boost/assign/list_of.hpp>
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
 #include <boost/bind.hpp>
+#endif
+
+#include <boost/assign/list_of.hpp>
 #include <boost/cstdint.hpp>
 #include "boost/date_time/gregorian/gregorian.hpp"
 #include <boost/format.hpp>

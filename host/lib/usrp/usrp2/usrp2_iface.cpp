@@ -31,13 +31,18 @@
 #include <boost/asio.hpp> //used for htonl and ntohl
 #include <boost/assign/list_of.hpp>
 #include <boost/format.hpp>
-#include <boost/bind.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/filesystem.hpp>
 #include <algorithm>
 #include <iostream>
 #include <uhd/utils/platform.hpp>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
+#include <boost/bind.hpp>
+#endif
 
 using namespace uhd;
 using namespace uhd::usrp;

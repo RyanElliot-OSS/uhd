@@ -25,9 +25,14 @@
 #include <boost/make_shared.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
-#include <boost/bind.hpp>
 #include <vector>
 #include <iostream>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
+#include <boost/bind.hpp>
+#endif
 
 using namespace uhd;
 using namespace uhd::transport;

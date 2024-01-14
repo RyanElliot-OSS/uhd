@@ -23,6 +23,10 @@
 #include <uhd/utils/algorithm.hpp>
 #include <uhd/utils/msg.hpp>
 
+#if 107300 < BOOST_VERSION
+using namespace boost::placeholders;
+#endif
+
 using namespace uhd;
 using namespace uhd::usrp;
 using namespace boost::assign;

@@ -19,12 +19,17 @@
 #define INCLUDED_UHD_TRANSPORT_BOUNDED_BUFFER_IPP
 
 #include <uhd/config.hpp>
-#include <boost/bind.hpp>
 #include <boost/utility.hpp>
 #include <boost/function.hpp>
 #include <boost/circular_buffer.hpp>
 #include <boost/thread/condition.hpp>
 #include <boost/thread/locks.hpp>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
+#include <boost/bind.hpp>
+#endif
 
 namespace uhd{ namespace transport{
 

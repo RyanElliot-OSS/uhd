@@ -17,9 +17,15 @@
 
 #include <boost/test/unit_test.hpp>
 #include <uhd/property_tree.hpp>
-#include <boost/bind.hpp>
 #include <exception>
 #include <iostream>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+#else
+#include <boost/bind.hpp>
+#endif
 
 struct coercer_type{
     int doit(int x){

@@ -24,12 +24,17 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/program_options.hpp>
 #include <boost/foreach.hpp>
-#include <boost/bind.hpp>
 #include <boost/format.hpp>
 #include <cstdlib>
 #include <ctime>
 #include <complex>
 #include <iostream>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
+#include <boost/bind.hpp>
+#endif
 
 namespace po = boost::program_options;
 

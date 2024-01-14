@@ -21,9 +21,15 @@
 #include <uhd/utils/algorithm.hpp>
 #include <uhd/exception.hpp>
 #include <boost/foreach.hpp>
-#include <boost/bind.hpp>
 #include <algorithm>
 #include <vector>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+#else
+#include <boost/bind.hpp>
+#endif
 
 using namespace uhd;
 

@@ -25,9 +25,14 @@
 #include <uhd/types/dict.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/format.hpp>
-#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/assign/list_of.hpp>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
+#include <boost/bind.hpp>
+#endif
 
 using namespace uhd;
 using namespace uhd::usrp;

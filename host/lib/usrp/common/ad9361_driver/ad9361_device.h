@@ -27,8 +27,14 @@
 #include <vector>
 #include <map>
 #include "boost/assign.hpp"
-#include "boost/bind.hpp"
 #include "boost/function.hpp"
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+#else
+#include <boost/bind.hpp>
+#endif
 
 namespace uhd { namespace usrp {
 

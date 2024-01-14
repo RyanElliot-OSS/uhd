@@ -32,10 +32,15 @@
 #include <boost/foreach.hpp>
 #include <boost/function.hpp>
 #include <boost/format.hpp>
-#include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 #include <iostream>
 #include <vector>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
+#include <boost/bind.hpp>
+#endif
 
 // Included for debugging
 #ifdef UHD_TXRX_DEBUG_PRINTS
