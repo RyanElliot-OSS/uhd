@@ -24,6 +24,7 @@
 #include <boost/format.hpp>
 #include <boost/foreach.hpp>
 #include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
 
 using namespace uhd;
 
@@ -64,7 +65,7 @@ struct x300_uart_iface : uart_iface
 
     void write_uart(const std::string &buff)
     {
-        boost::mutex::scoped_lock(_write_mutex);
+        boost::mutex::scoped_lock lock(_write_mutex);
         BOOST_FOREACH(const char ch, buff)
         {
             this->putchar(ch);
@@ -136,7 +137,7 @@ struct x300_uart_iface : uart_iface
 
     std::string read_uart(double timeout)
     {
-        boost::mutex::scoped_lock(_read_mutex);
+        boost::mutex::scoped_lock lock(_read_mutex);
         const boost::system_time exit_time = boost::get_system_time() + boost::posix_time::microseconds(long(timeout*1e6));
         std::string buff;
 

@@ -124,7 +124,7 @@ private: // members
     dboard_eeprom_t                         _db_eeprom;
     i2c::sptr                               _i2c;
 
-    boost::mutex    _mutex;
+    mutable boost::mutex    _mutex;
 };
 
 }}} //namespace

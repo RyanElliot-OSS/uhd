@@ -20,6 +20,7 @@
 #include "x310_lvbitx.hpp"
 #include <boost/algorithm/string.hpp>
 #include <boost/asio.hpp>
+#include <boost/thread/mutex.hpp>
 #include "apply_corrections.hpp"
 #include <uhd/utils/static.hpp>
 #include <uhd/utils/msg.hpp>
@@ -194,7 +195,7 @@ static device_addrs_t x300_find_pcie(const device_addr_t &hint, bool explicit_qu
 
             //Hold on to the registry mutex as long as zpu_ctrl is alive
             //to prevent any use by different threads while enumerating
-            boost::mutex::scoped_lock(pcie_zpu_iface_registry_mutex);
+            boost::mutex::scoped_lock lock(pcie_zpu_iface_registry_mutex);
 
             if (get_pcie_zpu_iface_registry().has_key(resource_d)) {
                 zpu_ctrl = get_pcie_zpu_iface_registry()[resource_d].lock();
@@ -509,7 +510,7 @@ void x300_impl::setup_mb(const size_t mb_i, const uhd::device_addr_t &dev_addr)
     //create basic communication
     UHD_MSG(status) << "Setup basic communication..." << std::endl;
     if (mb.xport_path == "nirio") {
-        boost::mutex::scoped_lock(pcie_zpu_iface_registry_mutex);
+        boost::mutex::scoped_lock lock(pcie_zpu_iface_registry_mutex);
         if (get_pcie_zpu_iface_registry().has_key(mb.addr)) {
             throw uhd::assertion_error("Someone else has a ZPU transport to the device open. Internal error!");
         } else {
@@ -900,7 +901,7 @@ x300_impl::~x300_impl(void)
             //kill the claimer task and unclaim the device
             mb.claimer_task.reset();
             {   //Critical section
-                boost::mutex::scoped_lock(pcie_zpu_iface_registry_mutex);
+                boost::mutex::scoped_lock lock(pcie_zpu_iface_registry_mutex);
                 mb.zpu_ctrl->poke32(SR_ADDR(X300_FW_SHMEM_BASE, X300_FW_SHMEM_CLAIM_TIME), 0);
                 mb.zpu_ctrl->poke32(SR_ADDR(X300_FW_SHMEM_BASE, X300_FW_SHMEM_CLAIM_SRC), 0);
                 //If the process is killed, the entire registry will disappear so we
@@ -1568,11 +1569,12 @@ void x300_impl::set_fp_gpio(gpio_core_200::sptr gpio, const gpio_attr_t attr, co
 /***********************************************************************
  * claimer logic
  **********************************************************************/
+boost::mutex x300_impl::claimer_mutex; // required definition for static class variable
 
 void x300_impl::claimer_loop(wb_iface::sptr iface)
 {
     {   //Critical section
-        boost::mutex::scoped_lock(claimer_mutex);
+        boost::mutex::scoped_lock lock(claimer_mutex);
         iface->poke32(SR_ADDR(X300_FW_SHMEM_BASE, X300_FW_SHMEM_CLAIM_TIME), uint32_t(time(NULL)));
         iface->poke32(SR_ADDR(X300_FW_SHMEM_BASE, X300_FW_SHMEM_CLAIM_SRC), get_process_hash());
     }
@@ -1581,7 +1583,7 @@ void x300_impl::claimer_loop(wb_iface::sptr iface)
 
 bool x300_impl::is_claimed(wb_iface::sptr iface)
 {
-    boost::mutex::scoped_lock(claimer_mutex);
+    boost::mutex::scoped_lock lock(claimer_mutex);
 
     //If timed out then device is definitely unclaimed
     if (iface->peek32(SR_ADDR(X300_FW_SHMEM_BASE, X300_FW_SHMEM_CLAIM_STATUS)) == 0)

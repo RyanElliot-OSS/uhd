@@ -255,7 +255,7 @@ uhd_error uhd_usrp_find(
     uhd_string_vector_handle *strings_out
 ){
     UHD_SAFE_C(
-        boost::mutex::scoped_lock _lock(_usrp_find_mutex);
+        boost::mutex::scoped_lock lock(_usrp_find_mutex);
 
         uhd::device_addrs_t devs = uhd::device::find(std::string(args), uhd::device::USRP);
         (*strings_out)->string_vector_cpp.clear();

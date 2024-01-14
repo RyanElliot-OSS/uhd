@@ -15,12 +15,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <boost/thread/mutex.hpp>
 #include "e300_eeprom_manager.hpp"
 #include <uhd/types/mac_addr.hpp>
 #include <uhd/utils/byteswap.hpp>
 
 namespace uhd { namespace usrp { namespace e300 {
-
+	
 static const std::string _bytes_to_string(const boost::uint8_t* bytes, size_t max_len)
 {
     std::string out;
@@ -54,7 +55,7 @@ e300_eeprom_manager::~e300_eeprom_manager(void)
 
 const mboard_eeprom_t& e300_eeprom_manager::read_mb_eeprom(void)
 {
-    boost::mutex::scoped_lock(_mutex);
+    boost::mutex::scoped_lock lock(_mutex);
 
     std::vector<boost::uint8_t> bytes;
     bytes.resize(sizeof(mb_eeprom_map_t));
@@ -85,7 +86,7 @@ const mboard_eeprom_t& e300_eeprom_manager::read_mb_eeprom(void)
 
 const dboard_eeprom_t& e300_eeprom_manager::read_db_eeprom(void)
 {
-    boost::mutex::scoped_lock(_mutex);
+    boost::mutex::scoped_lock lock(_mutex);
 
     std::vector<boost::uint8_t> bytes;
     bytes.resize(sizeof(db_eeprom_map_t));
@@ -111,7 +112,7 @@ const dboard_eeprom_t& e300_eeprom_manager::read_db_eeprom(void)
 
 void e300_eeprom_manager::write_db_eeprom(const dboard_eeprom_t& eeprom)
 {
-    boost::mutex::scoped_lock(_mutex);
+    boost::mutex::scoped_lock lock(_mutex) ;
     _db_eeprom = eeprom;
     std::vector<boost::uint8_t> bytes;
     bytes.resize(sizeof(db_eeprom_map_t));
@@ -149,7 +150,7 @@ void e300_eeprom_manager::write_db_eeprom(const dboard_eeprom_t& eeprom)
 
 void e300_eeprom_manager::write_mb_eeprom(const mboard_eeprom_t& eeprom)
 {
-    boost::mutex::scoped_lock(_mutex);
+    boost::mutex::scoped_lock lock(_mutex);
     _mb_eeprom = eeprom;
     std::vector<boost::uint8_t> bytes;
     bytes.resize(sizeof(mb_eeprom_map_t));
@@ -197,7 +198,7 @@ void e300_eeprom_manager::write_mb_eeprom(const mboard_eeprom_t& eeprom)
 
 e300_eeprom_manager::mboard_t e300_eeprom_manager::get_mb_type(void) const
 {
-    boost::mutex::scoped_lock(_mutex);
+    boost::mutex::scoped_lock lock(_mutex);
     boost::uint16_t pid = boost::lexical_cast<boost::uint16_t>(
         _mb_eeprom["product"]);
     return get_mb_type(pid);
@@ -224,7 +225,7 @@ e300_eeprom_manager::mboard_t e300_eeprom_manager::get_mb_type(
 
 std::string e300_eeprom_manager::get_mb_type_string(void) const
 {
-    boost::mutex::scoped_lock(_mutex);
+    boost::mutex::scoped_lock lock(_mutex);
     boost::uint16_t product = boost::lexical_cast<boost::uint16_t>(
         _mb_eeprom["product"]);
     switch (product) {

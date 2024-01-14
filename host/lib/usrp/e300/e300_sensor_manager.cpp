@@ -20,6 +20,7 @@
 #include <boost/thread.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/format.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include <cstring>
 #include <uhd/exception.hpp>
@@ -53,7 +54,7 @@ public:
 
     uhd::sensor_value_t get_mb_temp(void)
     {
-        boost::mutex::scoped_lock(_mutex);
+        boost::mutex::scoped_lock lock(_mutex);
         sensor_transaction_t transaction;
         transaction.which = uhd::htonx<boost::uint32_t>(ZYNQ_TEMP);
         {
@@ -91,7 +92,7 @@ public:
 
     uhd::sensor_value_t get_ref_lock(void)
     {
-        boost::mutex::scoped_lock(_mutex);
+        boost::mutex::scoped_lock lock(_mutex);
         sensor_transaction_t transaction;
         transaction.which = uhd::htonx<boost::uint32_t>(REF_LOCK);
         {
