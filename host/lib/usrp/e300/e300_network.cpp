@@ -43,6 +43,12 @@
 
 #include <fstream>
 
+#if defined(__GNUC__) && __GNUC__ >= 7
+ #define FALL_THROUGH __attribute__ ((fallthrough))
+#else
+ #define FALL_THROUGH ((void)0)
+#endif /* __GNUC__ >= 7 */
+
 using namespace uhd;
 using namespace uhd::transport;
 namespace asio = boost::asio;
@@ -243,6 +249,7 @@ static void e300_codec_ctrl_tunnel(
                 break;
             case codec_xact_t::ACTION_SET_IQ_BALANCE_AUTO:
                 _codec_ctrl->set_iq_balance_auto(which_str, in->use_iq_correction == 1);
+		FALL_THROUGH;
             case codec_xact_t::ACTION_SET_AGC:
                 _codec_ctrl->set_agc(which_str, in->use_agc == 1);
                 break;

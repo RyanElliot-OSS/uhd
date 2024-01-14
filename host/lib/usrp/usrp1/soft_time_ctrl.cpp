@@ -22,6 +22,12 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <iostream>
 
+#if defined(__GNUC__) && __GNUC__ >= 7
+ #define FALL_THROUGH __attribute__ ((fallthrough))
+#else
+ #define FALL_THROUGH ((void)0)
+#endif /* __GNUC__ >= 7 */
+
 using namespace uhd;
 using namespace uhd::usrp;
 using namespace uhd::transport;
@@ -110,6 +116,7 @@ public:
             metadata.time_spec = this->time_now();
             metadata.error_code = rx_metadata_t::ERROR_CODE_BROKEN_CHAIN;
             _inline_msg_queue.push_with_pop_on_full(metadata);
+	    FALL_THROUGH;
         } //continue to next case...
         case stream_cmd_t::STREAM_MODE_NUM_SAMPS_AND_DONE:
             md.end_of_burst = true;
