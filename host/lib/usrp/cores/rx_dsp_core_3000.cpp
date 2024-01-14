@@ -40,6 +40,10 @@
 #define FLAG_DSP_RX_MUX_INVERT_Q  (1 << 2)
 #define FLAG_DSP_RX_MUX_INVERT_I  (1 << 3)
 
+#if 107300 < BOOST_VERSION
+using namespace boost::placeholders;
+#endif
+
 template <class T> T ceil_log2(T num){
     return std::ceil(std::log(num)/std::log(T(2)));
 }

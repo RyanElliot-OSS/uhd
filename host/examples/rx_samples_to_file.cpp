@@ -28,6 +28,10 @@
 #include <csignal>
 #include <complex>
 
+#if 107300 < BOOST_VERSION
+using namespace boost::placeholders;
+#endif
+
 namespace po = boost::program_options;
 
 static bool stop_signal_called = false;

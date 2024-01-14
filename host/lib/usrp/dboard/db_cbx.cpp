@@ -19,6 +19,10 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/math/special_functions/round.hpp>
 
+#if 107300 < BOOST_VERSION
+using namespace boost::placeholders;
+#endif
+
 using namespace uhd;
 using namespace uhd::usrp;
 using namespace boost::assign;

@@ -37,6 +37,10 @@
 #include <map>
 #include "max287x.hpp"
 
+#if 107300 < BOOST_VERSION
+using namespace boost::placeholders;
+#endif
+
 using namespace uhd;
 using namespace uhd::usrp;
 

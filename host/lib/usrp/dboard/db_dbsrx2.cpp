@@ -33,6 +33,10 @@
 #include <boost/math/special_functions/round.hpp>
 #include <utility>
 
+#if 107300 < BOOST_VERSION
+using namespace boost::placeholders;
+#endif
+
 using namespace uhd;
 using namespace uhd::usrp;
 using namespace boost::assign;
