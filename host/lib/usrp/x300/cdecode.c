@@ -82,6 +82,8 @@ size_t base64_decode_block(const char* code_in, const size_t length_in, char* pl
                 } while ((signed char)fragment < 0);
                 *plainchar++   |= (fragment & 0x03f);
 		FALL_THROUGH;
+	    default:
+		break;
         }
     }
     /* control should not reach here */
