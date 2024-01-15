@@ -29,7 +29,6 @@
 #include <uhd/utils/static.hpp>
 
 #include <boost/cstdint.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/thread.hpp>
@@ -42,7 +41,14 @@
 #include <iostream>
 #include <string>
 
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
+#endif
+
 using namespace uhd;
 using namespace uhd::usrp_clock;
 using namespace uhd::transport;

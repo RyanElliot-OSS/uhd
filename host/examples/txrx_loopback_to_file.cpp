@@ -28,10 +28,17 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
 #include <iostream>
 #include <fstream>
 #include <csignal>
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 namespace po = boost::program_options;
 

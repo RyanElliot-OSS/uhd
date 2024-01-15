@@ -37,13 +37,20 @@
 #include <boost/make_shared.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/thread/thread.hpp> //sleep
 #include <boost/asio.hpp>
 #include <fstream>
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 #if 107300 < BOOST_VERSION
 #include <boost/bind/bind.hpp>
@@ -54,7 +61,6 @@
 using namespace uhd;
 using namespace uhd::usrp;
 using namespace uhd::transport;
-namespace fs = boost::filesystem;
 namespace asio = boost::asio;
 
 //! mapping of frontend to radio perif index

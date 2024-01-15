@@ -29,7 +29,6 @@
 #include <boost/cstdint.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/format.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/thread.hpp>
 
 #include <uhd/device.hpp>
@@ -44,11 +43,18 @@
 #include "../lib/usrp_clock/octoclock/common.h"
 #include "../lib/utils/ihex.hpp"
 
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
+
 #define MAX_FIRMWARE_SIZE 1024*120
 #define BLOCK_SIZE 256
 #define UDP_TIMEOUT 5
 
-namespace fs = boost::filesystem;
 namespace po = boost::program_options;
 
 using namespace uhd;

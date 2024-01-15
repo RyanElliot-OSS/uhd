@@ -27,7 +27,6 @@
 #include <cstring>
 
 #include <boost/cstdint.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
@@ -41,8 +40,15 @@
 #include <uhd/exception.hpp>
 #include <uhd/utils/paths.hpp>
 
-namespace po = boost::program_options;
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
+#endif
+
+namespace po = boost::program_options;
 
 struct vid_pid_t {
     boost::uint16_t vid;

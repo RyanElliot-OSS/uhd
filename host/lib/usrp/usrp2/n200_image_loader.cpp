@@ -21,7 +21,6 @@
 
 #include <boost/asio/ip/address_v4.hpp>
 #include <boost/assign.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
 #include <boost/algorithm/string/erase.hpp>
@@ -40,9 +39,16 @@
 #include "usrp2_iface.hpp"
 #include "usrp2_impl.hpp"
 
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
+
 typedef boost::asio::ip::address_v4 ip_v4;
 
-namespace fs = boost::filesystem;
 using namespace boost::algorithm;
 
 using namespace uhd;

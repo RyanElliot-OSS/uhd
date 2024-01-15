@@ -27,11 +27,18 @@
 #include <uhd/utils/safe_call.hpp>
 #include <boost/format.hpp>
 #include <boost/assign/list_of.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/lexical_cast.hpp>
 #include <cstdio>
 #include <iostream>
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 #if 107300 < BOOST_VERSION
 using namespace boost::placeholders;

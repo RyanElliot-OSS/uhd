@@ -20,7 +20,6 @@
 #include <boost/asio.hpp>
 #include <boost/assign.hpp>
 #include <boost/cstdint.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/thread.hpp>
@@ -42,6 +41,14 @@
 #include "octoclock_uart.hpp"
 #include "common.h"
 
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
+
 #if 107300 < BOOST_VERSION
 using namespace boost::placeholders;
 #endif
@@ -50,7 +57,6 @@ using namespace uhd;
 using namespace uhd::usrp_clock;
 using namespace uhd::transport;
 namespace asio = boost::asio;
-namespace fs = boost::filesystem;
 
 /***********************************************************************
  * Discovery

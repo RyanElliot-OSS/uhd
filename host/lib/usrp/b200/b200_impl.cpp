@@ -28,7 +28,6 @@
 #include <uhd/usrp/dboard_eeprom.hpp>
 #include <boost/format.hpp>
 #include <boost/assign/list_of.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/functional/hash.hpp>
@@ -39,6 +38,14 @@
 #include <cmath>
 
 #include "../../transport/libusb1_base.hpp"
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 using namespace uhd;
 using namespace uhd::usrp;

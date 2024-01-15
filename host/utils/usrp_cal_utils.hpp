@@ -22,7 +22,6 @@
 #include <uhd/utils/paths.hpp>
 #include <uhd/utils/algorithm.hpp>
 #include <uhd/utils/msg.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <iostream>
 #include <vector>
@@ -31,7 +30,13 @@
 #include <cstdlib>
 #include <fstream>
 
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
+#endif
 
 struct result_t{double freq, real_corr, imag_corr, best, delta;};
 

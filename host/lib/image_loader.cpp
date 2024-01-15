@@ -19,7 +19,6 @@
 #include <map>
 #include <utility>
 
-#include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 
@@ -29,7 +28,13 @@
 #include <uhd/utils/msg.hpp>
 #include <uhd/utils/static.hpp>
 
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
+#endif
 
 typedef std::map<std::string, uhd::image_loader::loader_fcn_t> loader_fcn_map_t;
 typedef std::map<std::string, std::string> string_map_t;

@@ -38,10 +38,17 @@
 #include <boost/version.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
 
 #include <fstream>
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 #if defined(__GNUC__) && __GNUC__ >= 7
  #define FALL_THROUGH __attribute__ ((fallthrough))
@@ -52,7 +59,6 @@
 using namespace uhd;
 using namespace uhd::transport;
 namespace asio = boost::asio;
-namespace fs = boost::filesystem;
 
 namespace uhd { namespace usrp { namespace e300 {
 

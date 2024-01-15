@@ -20,7 +20,6 @@
 #include <uhd/utils/safe_main.hpp>
 #include <uhd/usrp/multi_usrp.hpp>
 #include <uhd/usrp_clock/multi_usrp_clock.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <boost/format.hpp>
 #include <iostream>
@@ -31,8 +30,15 @@
 #include <ctime>
 #include <cstdlib>
 
-namespace po = boost::program_options;
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
+#endif
+
+namespace po = boost::program_options;
 
 void print_notes(void) {
   // Helpful notes

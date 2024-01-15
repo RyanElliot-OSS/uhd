@@ -35,7 +35,6 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string/erase.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/thread/thread.hpp>
 
 #include <uhd/exception.hpp>
@@ -48,6 +47,14 @@
 #include <uhd/utils/paths.hpp>
 #include <uhd/utils/safe_main.hpp>
 #include <uhd/utils/safe_call.hpp>
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 extern "C" {
 #include "cdecode.h"

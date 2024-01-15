@@ -19,7 +19,6 @@
 #include <vector>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -38,7 +37,13 @@
 #include "x300_fw_common.h"
 #include "cdecode.h"
 
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
+#endif
 
 using namespace boost::algorithm;
 using namespace uhd;

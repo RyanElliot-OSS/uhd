@@ -5,10 +5,17 @@
 #include <iostream>
 #include <fstream>
 #include <streambuf>
-#include <boost/filesystem/path.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
 #include <uhd/utils/paths.hpp>
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 namespace uhd {{ namespace niusrprio {{
 

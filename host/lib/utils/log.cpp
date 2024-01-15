@@ -19,7 +19,6 @@
 #include <uhd/utils/msg.hpp>
 #include <uhd/utils/static.hpp>
 #include <uhd/utils/paths.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -40,7 +39,14 @@ namespace boost{ namespace interprocess{
 #include <fstream>
 #include <cctype>
 
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
+#endif
+
 namespace pt = boost::posix_time;
 namespace ip = boost::interprocess;
 

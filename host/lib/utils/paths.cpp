@@ -21,17 +21,10 @@
 #include <uhd/utils/paths.hpp>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/regex.hpp>
 #include <boost/tokenizer.hpp>
-
-#if 107300 < BOOST_VERSION
-#include <boost/bind/bind.hpp>
-#else
-#include <boost/bind.hpp>
-#endif
 
 #include <cstdio>
 #include <cstdlib>
@@ -41,12 +34,24 @@
 #include <string>
 #include <vector>
 
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+#else
+#include <boost/bind.hpp>
+#endif
+
 #ifdef BOOST_MSVC
 #define USE_GET_TEMP_PATH
 #include <windows.h> //GetTempPath
 #endif
-
-namespace fs = boost::filesystem;
 
 /*! Get the value of an environment variable.
  *

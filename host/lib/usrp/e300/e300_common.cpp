@@ -25,9 +25,16 @@
 
 #include "e300_common.hpp"
 
-#include <boost/filesystem.hpp>
 #include <fstream>
 #include <string>
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 #ifdef E300_NATIVE
 namespace uhd { namespace usrp { namespace e300 {

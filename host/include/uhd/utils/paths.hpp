@@ -20,12 +20,17 @@
 
 #include <uhd/config.hpp>
 
-#include <boost/filesystem.hpp>
-
 #include <string>
 #include <vector>
 
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
+#endif
+
 
 namespace uhd {
 

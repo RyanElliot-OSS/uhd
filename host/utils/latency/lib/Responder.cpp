@@ -26,9 +26,16 @@
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
 #include <uhd/utils/thread_priority.hpp>
 #include <uhd/property_tree.hpp>
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 const std::string _eth_file("eths_info.txt");
 

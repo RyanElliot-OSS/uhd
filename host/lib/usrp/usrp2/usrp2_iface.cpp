@@ -33,10 +33,17 @@
 #include <boost/format.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/functional/hash.hpp>
-#include <boost/filesystem.hpp>
 #include <algorithm>
 #include <iostream>
 #include <uhd/utils/platform.hpp>
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 #if 107300 < BOOST_VERSION
 #include <boost/bind/bind.hpp>
@@ -47,7 +54,6 @@
 using namespace uhd;
 using namespace uhd::usrp;
 using namespace uhd::transport;
-namespace fs = boost::filesystem;
 
 static const double CTRL_RECV_TIMEOUT = 1.0;
 static const size_t CTRL_RECV_RETRIES = 3;

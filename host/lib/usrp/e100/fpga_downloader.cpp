@@ -17,7 +17,6 @@
 
 #include <uhd/config.hpp>
 #ifdef UHD_DLL_EXPORTS
-#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <uhd/exception.hpp>
 #include <uhd/device.hpp>
@@ -59,6 +58,14 @@ namespace uhd{
  * INIT_B - GPIO_114     - input  (change mux)
  *
 */
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 namespace usrp_e_fpga_downloader_utility{
 
