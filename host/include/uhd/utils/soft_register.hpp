@@ -96,8 +96,13 @@ namespace soft_reg_field {
 
     template<typename data_t>
     inline data_t mask(const soft_reg_field_t field) {
+	#if __cplusplus > 199711L
         constexpr data_t ONE      = static_cast<data_t>(1);
 	constexpr data_t ALL_ONES = ~static_cast<data_t>(0);
+	#else
+        static const data_t ONE      = static_cast<data_t>(1);
+	static const data_t ALL_ONES = ~static_cast<data_t>(0);
+	#endif
         //Behavior for the left shift operation is undefined in C++
         //if the shift amount is >= bitwidth of the datatype
         //So we treat that as a special case with a branch predicition hint
