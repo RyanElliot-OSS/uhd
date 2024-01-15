@@ -29,9 +29,15 @@
 #include <boost/math/special_functions/sign.hpp>
 #include <boost/math/special_functions/round.hpp>
 #include <boost/thread/thread.hpp>
-#include <boost/bind.hpp>
 #include <boost/format.hpp>
 #include <boost/make_shared.hpp>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+#else
+#include <boost/bind.hpp>
+#endif
 
 #define bmFR_RX_FORMAT_SHIFT_SHIFT 0
 #define bmFR_RX_FORMAT_WIDTH_SHIFT 4

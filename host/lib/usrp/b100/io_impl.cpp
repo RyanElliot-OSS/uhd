@@ -19,13 +19,18 @@
 #include "../../transport/super_recv_packet_handler.hpp"
 #include "../../transport/super_send_packet_handler.hpp"
 #include "b100_impl.hpp"
-#include <boost/bind.hpp>
 #include <boost/format.hpp>
-#include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <uhd/utils/msg.hpp>
 #include <uhd/utils/log.hpp>
 #include <boost/make_shared.hpp>
+
+#if 107300 < BOOST_VERSION
+#include <boost/bind/bind.hpp>
+using namespace boost::placeholders;
+#else
+#include <boost/bind.hpp>
+#endif
 
 using namespace uhd;
 using namespace uhd::usrp;
