@@ -28,10 +28,21 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
 #include <iostream>
 #include <fstream>
 #include <csignal>
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs2 = std::filesystem;
+#define FILE_SYSTEM_PATH fs2::path
+#define GET_FILE_EXTENSION(file) fs2::path(file).extension().string()
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#define FILE_SYSTEM_PATH fs::path
+#define GET_FILE_EXTENSION(file) fs::extension(file)
+#endif
 
 namespace po = boost::program_options;
 
@@ -52,9 +63,9 @@ std::string generate_out_filename(const std::string &base_fn, size_t n_names, si
         return base_fn;
     }
 
-    boost::filesystem::path base_fn_fp(base_fn);
+    FILE_SYSTEM_PATH base_fn_fp(base_fn);
     base_fn_fp.replace_extension(
-        boost::filesystem::path(
+        FILE_SYSTEM_PATH(
             str(boost::format("%02d%s") % this_name % base_fn_fp.extension().string())
         )
     );

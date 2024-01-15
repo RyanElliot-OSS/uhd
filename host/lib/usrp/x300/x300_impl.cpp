@@ -28,7 +28,6 @@
 #include <uhd/utils/safe_call.hpp>
 #include <uhd/usrp/subdev_spec.hpp>
 #include <uhd/transport/if_addrs.hpp>
-#include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/assign/list_of.hpp>
@@ -38,6 +37,21 @@
 #include <uhd/transport/nirio_zero_copy.hpp>
 #include <uhd/transport/nirio/niusrprio_session.h>
 #include <uhd/utils/platform.hpp>
+
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs2 = std::filesystem;
+#define FILE_SYSTEM_PATH fs2::path
+#define GET_FILE_EXTENSION(file) fs2::path(file).extension().string()
+#define MY_FOREACH(type, group) for(type : group)
+#else
+#include <boost/foreach.hpp>
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#define FILE_SYSTEM_PATH fs::path
+#define GET_FILE_EXTENSION(file) fs::extension(file)
+#define MY_FOREACH(type, group) BOOST_FOREACH(type, group)
+#endif
 
 #if 107300 < BOOST_VERSION
 #include <boost/bind/bind.hpp>
@@ -161,7 +175,7 @@ static device_addrs_t x300_find_pcie(const device_addr_t &hint, bool explicit_qu
     nirio_status status = niusrprio_session::enumerate(rpc_port_name, dev_info_vtr);
     if (explicit_query) nirio_status_to_exception(status, "x300_find_pcie: Error enumerating NI-RIO devices.");
 
-    BOOST_FOREACH(niusrprio_session::device_info &dev_info, dev_info_vtr)
+    MY_FOREACH(niusrprio_session::device_info &dev_info, dev_info_vtr)
     {
         device_addr_t new_addr;
         new_addr["type"] = "x300";
@@ -252,7 +266,7 @@ device_addrs_t x300_find(const device_addr_t &hint_)
     {
         device_addrs_t found_devices;
         std::string error_msg;
-        BOOST_FOREACH(const device_addr_t &hint_i, hints)
+        MY_FOREACH(const device_addr_t &hint_i, hints)
         {
             device_addrs_t found_devices_i = x300_find(hint_i);
             if (found_devices_i.size() != 1) error_msg += str(boost::format(
@@ -290,7 +304,7 @@ device_addrs_t x300_find(const device_addr_t &hint_)
         {
             UHD_MSG(error) << "X300 Network discovery unknown error " << std::endl;
         }
-        BOOST_FOREACH(const device_addr_t &reply_addr, reply_addrs)
+        MY_FOREACH(const device_addr_t &reply_addr, reply_addrs)
         {
             device_addrs_t new_addrs = x300_find_with_addr(reply_addr);
             addrs.insert(addrs.begin(), new_addrs.begin(), new_addrs.end());
@@ -301,7 +315,7 @@ device_addrs_t x300_find(const device_addr_t &hint_)
     if (!hint.has_key("resource"))
     {
         //otherwise, no address was specified, send a broadcast on each interface
-        BOOST_FOREACH(const if_addrs_t &if_addrs, get_if_addrs())
+        MY_FOREACH(const if_addrs_t &if_addrs, get_if_addrs())
         {
             //avoid the loopback device
             if (if_addrs.inet == asio::ip::address_v4::loopback().to_string()) continue;
@@ -437,7 +451,7 @@ void x300_impl::setup_mb(const size_t mb_i, const uhd::device_addr_t &dev_addr)
         _tree->create<double>(mb_path / "link_max_rate").set(X300_MAX_RATE_PCIE);
     }
 
-    BOOST_FOREACH(const std::string &key, dev_addr.keys())
+    MY_FOREACH(const std::string &key, dev_addr.keys())
     {
         if (key.find("recv") != std::string::npos) mb.recv_args[key] = dev_addr[key];
         if (key.find("send") != std::string::npos) mb.send_args[key] = dev_addr[key];
@@ -735,7 +749,7 @@ void x300_impl::setup_mb(const size_t mb_i, const uhd::device_addr_t &dev_addr)
         }
         if (mb.gps and mb.gps->gps_detected())
         {
-            BOOST_FOREACH(const std::string &name, mb.gps->get_sensors())
+            MY_FOREACH(const std::string &name, mb.gps->get_sensors())
             {
                 _tree->create<sensor_value_t>(mb_path / "sensors" / name)
                     .publish(boost::bind(&gps_ctrl::get_sensor, mb.gps, name));
@@ -776,7 +790,7 @@ void x300_impl::setup_mb(const size_t mb_i, const uhd::device_addr_t &dev_addr)
     // front panel gpio
     ////////////////////////////////////////////////////////////////////
     mb.fp_gpio = gpio_core_200::make(mb.radio_perifs[0].ctrl, radio::sr_addr(radio::FP_GPIO), radio::RB32_FP_GPIO);
-    BOOST_FOREACH(const gpio_attr_map_t::value_type attr, gpio_attr_map)
+    MY_FOREACH(const gpio_attr_map_t::value_type attr, gpio_attr_map)
     {
         _tree->create<boost::uint32_t>(mb_path / "gpio" / "FP0" / attr.second)
             .set(0)
@@ -888,7 +902,7 @@ x300_impl::~x300_impl(void)
 {
     try
     {
-        BOOST_FOREACH(mboard_members_t &mb, _mb)
+        MY_FOREACH(mboard_members_t &mb, _mb)
         {
             //Disable/reset ADC/DAC
             mb.radio_perifs[0].regmap->misc_outs_reg.set(radio_regmap_t::misc_outs_reg_t::ADC_RESET, 1);
@@ -1070,12 +1084,12 @@ void x300_impl::setup_radio(const size_t mb_i, const std::string &slot_name, con
 
     //bind frontend corrections to the dboard freq props
     const fs_path db_tx_fe_path = db_path / "tx_frontends";
-    BOOST_FOREACH(const std::string &name, _tree->list(db_tx_fe_path)) {
+    MY_FOREACH(const std::string &name, _tree->list(db_tx_fe_path)) {
         _tree->access<double>(db_tx_fe_path / name / "freq" / "value")
             .subscribe(boost::bind(&x300_impl::set_tx_fe_corrections, this, mb_path, slot_name, _1));
     }
     const fs_path db_rx_fe_path = db_path / "rx_frontends";
-    BOOST_FOREACH(const std::string &name, _tree->list(db_rx_fe_path)) {
+    MY_FOREACH(const std::string &name, _tree->list(db_rx_fe_path)) {
         _tree->access<double>(db_rx_fe_path / name / "freq" / "value")
             .subscribe(boost::bind(&x300_impl::set_rx_fe_corrections, this, mb_path, slot_name, _1));
     }
@@ -1335,7 +1349,7 @@ void x300_impl::update_atr_leds(gpio_core_200_32wo::sptr leds, const std::string
 
 void x300_impl::set_tick_rate(mboard_members_t &mb, const double rate)
 {
-    BOOST_FOREACH(radio_perifs_t &perif, mb.radio_perifs) {
+    MY_FOREACH(radio_perifs_t &perif, mb.radio_perifs) {
         perif.ctrl->set_tick_rate(rate);
         perif.time64->set_tick_rate(rate);
         perif.framer->set_tick_rate(rate);
@@ -1485,7 +1499,7 @@ void x300_impl::update_time_source(mboard_members_t &mb, const std::string &sour
 
 void x300_impl::sync_times(mboard_members_t &mb, const uhd::time_spec_t& t)
 {
-    BOOST_FOREACH(radio_perifs_t &perif, mb.radio_perifs)
+    MY_FOREACH(radio_perifs_t &perif, mb.radio_perifs)
         perif.time64->set_time_sync(t);
     mb.fw_regmap->clock_ctrl_reg.write(fw_regmap_t::clk_ctrl_reg_t::TIME_SYNC, 1);
     mb.fw_regmap->clock_ctrl_reg.write(fw_regmap_t::clk_ctrl_reg_t::TIME_SYNC, 0);
@@ -1704,7 +1718,7 @@ void x300_impl::check_fpga_compat(const fs_path &mb_path, const mboard_members_t
 
     if (compat_major != X300_FPGA_COMPAT_MAJOR)
     {
-        std::string image_loader_path = (fs::path(uhd::get_pkg_path()) / "bin" / "uhd_image_loader").string();
+        std::string image_loader_path = (FILE_SYSTEM_PATH(uhd::get_pkg_path()) / "bin" / "uhd_image_loader").string();
         std::string image_loader_cmd = str(boost::format("\"%s\" --args=\"type=x300,%s=%s\"")
                                               % image_loader_path
                                               % (members.xport_path == "eth" ? "addr"

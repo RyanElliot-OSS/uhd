@@ -25,7 +25,6 @@
 #include <string.h>
 #include <vector>
 
-#include <boost/foreach.hpp>
 #include <boost/asio.hpp>
 #include <boost/program_options.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -35,7 +34,6 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string/erase.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/thread/thread.hpp>
 
 #include <uhd/exception.hpp>
@@ -72,7 +70,19 @@ extern "C" {
 #define X300_FPGA_PROG_CONFIGURE     64
 #define X300_FPGA_PROG_CONFIG_STATUS 128
 
+#if (__cplusplus >= 201703L) && (108300 < BOOST_VERSION)
+#include <filesystem>
+namespace fs2 = std::filesystem;
+#define GET_FILE_EXTENSION(file) fs2::path(file).extension().string()
+#define MY_FOREACH(type, group) for(type : group)
+#else
+#include <boost/foreach.hpp>
+#include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
+#define GET_FILE_EXTENSION(file) fs::extension(file)
+#define MY_FOREACH(type, group) BOOST_FOREACH(type, group)
+#endif
+
 namespace po = boost::program_options;
 
 using namespace uhd;
@@ -117,7 +127,7 @@ void list_usrps(){
     device_addrs_t found_devices = device::find(device_addr_t("type=x300"), device::USRP);
 
     std::cout << "Available X3x0 devices:" << std::endl;
-    BOOST_FOREACH(const device_addr_t &dev, found_devices){
+    MY_FOREACH(const device_addr_t &dev, found_devices){
         std::string dev_string;
         if(dev.has_key("addr")){
             dev_string = str(boost::format(" * %s (%s, addr: %s)")
@@ -264,10 +274,10 @@ void ethernet_burn(udp_simple::sptr udp_transport, std::string fpga_path, bool v
     boost::uint32_t max_size;
     std::vector<char> bitstream;
 
-    if(fs::extension(fpga_path) == ".bit") max_size = X300_FPGA_BIT_MAX_SIZE_BYTES;
+    if(GET_FILE_EXTENSION(fpga_path) == ".bit") max_size = X300_FPGA_BIT_MAX_SIZE_BYTES;
     else max_size = X300_FPGA_BIN_SIZE_BYTES; //Use for both .bin and .lvbitx
 
-    bool is_lvbitx = (fs::extension(fpga_path) == ".lvbitx");
+    bool is_lvbitx = (GET_FILE_EXTENSION(fpga_path) == ".lvbitx");
 
     size_t fpga_image_size;
     FILE* file;
@@ -539,7 +549,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
     /*
      * Check validity of image through extension
      */
-    std::string ext = fs::extension(fpga_path.c_str());
+    std::string ext = GET_FILE_EXTENSION(fpga_path.c_str());
     if(ext != ".bin" and ext != ".bit" and ext != ".lvbitx"){
         throw std::runtime_error("The image filename must end in .bin, .bit, or .lvbitx.");
     }
